@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading Memories...</title>
+    <style>
+        /* Pengaturan Dasar */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #050505; /* Warna latar gelap seperti di video */
+            color: #ffffff;
+            font-family: 'Georgia', serif; /* Font klasik/elegan */
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            user-select: none;
+        }
+
+        /* Pengaturan Layar Transisi */
+        .screen {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1s ease-in-out;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 10;
+        }
+        .active {
+            opacity: 1 !important;
+            pointer-events: auto !important;
+        }
+
+        /* --- Layar 1: Loading --- */
+        .heart-glow {
+            font-size: 60px;
+            color: #ff4d6d;
+            animation: pulse 1.5s infinite;
+            text-shadow: 0 0 30px #ff4d6d;
+            margin-bottom: 20px;
+        }
+        .loading-text {
+            letter-spacing: 6px;
+            font-size: 14px;
+            color: #b3b3b3;
+            text-transform: uppercase;
+        }
+
+        /* --- Layar 2: Tap to Start --- */
+        .tap-icon {
+            font-size: 50px;
+            cursor: pointer;
+            animation: bounce 2s infinite;
+            color: #ff4d6d;
+        }
+        .tap-text {
+            margin-top: 15px;
+            letter-spacing: 4px;
+            font-size: 14px;
+            color: #888;
+        }
+
+        /* --- Layar 3: Memories (Foto & Teks) --- */
+        #memories-screen {
+            background-color: #000;
+            z-index: 5;
+        }
+        
+        /* Teks melayang di background */
+        .bg-text {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.15); /* Teks samar */
+            font-size: 16px;
+            white-space: nowrap;
+            z-index: 1;
+            animation: float 8s infinite alternate ease-in-out;
+        }
+
+        /* Container untuk foto-foto yang muncul */
+        #photo-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            max-width: 500px;
+            z-index: 2;
+        }
+        .photo {
+            position: absolute;
+            width: 180px;
+            height: 240px;
+            object-fit: cover;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            opacity: 0;
+            transition: transform 0.5s ease;
+        }
+        
+        /* Animasi */
+        @keyframes pulse {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; text-shadow: 0 0 40px #ff4d6d; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-20px); }
+            60% { transform: translateY(-10px); }
+        }
+        @keyframes float {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(15px, -15px); }
+        }
+        @keyframes fadeInPhoto {
+            0% { opacity: 0; transform: translateY(30px) scale(0.9); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Musik Latar -->
+    <audio id="bg-music" loop>
+        <source src="musik.mp3" type="audio/mp3">
+    </audio>
+
+    <!-- Layar 1: Loading Memories -->
+    <div id="loading-screen" class="screen active">
+        <div class="heart-glow">❤️</div>
+        <div class="loading-text">LOADING MEMORIES<span id="dots"></span></div>
+    </div>
+
+    <!-- Layar 2: Tap to Start -->
+    <div id="start-screen" class="screen">
+        <div class="tap-icon" onclick="startMemories()">👆</div>
+        <div class="tap-text">TAP TO START</div>
+    </div>
+
+    <!-- Layar 3: Memories Collage -->
+    <div id="memories-screen" class="screen">
+        <!-- Teks Romantis di Background -->
+        <div class="bg-text" style="top: 15%; left: 10%;">my favorite person</div>
+        <div class="bg-text" style="top: 25%; right: 15%; animation-delay: 1s;">stay with me forever</div>
+        <div class="bg-text" style="top: 45%; left: 5%; animation-delay: 2s;">the most hardworking person</div>
+        <div class="bg-text" style="top: 65%; right: 5%; animation-delay: 0.5s;">thank you for always supporting me</div>
+        <div class="bg-text" style="top: 85%; left: 20%; animation-delay: 1.5s;">always on my mind</div>
+        <div class="bg-text" style="top: 35%; left: 35%; animation-delay: 3s;">you mean everything</div>
+        <div class="bg-text" style="top: 75%; left: 40%; animation-delay: 2.5s;">I love you</div>
+
+        <!-- Area Foto -->
+        <div id="photo-container"></div>
+    </div>
+
+    <script>
+        // Efek Titik-titik Loading
+        let dotCount = 0;
+        const dotsElement = document.getElementById('dots');
+        const loadingInterval = setInterval(() => {
+            dotCount = (dotCount + 1) % 4;
+            dotsElement.innerText = '.'.repeat(dotCount);
+        }, 500);
+
+        // Pindah dari Loading ke Tap to Start setelah 4 detik
+        setTimeout(() => {
+            clearInterval(loadingInterval);
+            document.getElementById('loading-screen').classList.remove('active');
+            document.getElementById('start-screen').classList.add('active');
+        }, 4000);
+
+        // Fungsi saat layar ditekan
+        function startMemories() {
+            // Mainkan musik
+            document.getElementById('bg-music').play();
+            
+            // Transisi Layar
+            document.getElementById('start-screen').classList.remove('active');
+            document.getElementById('memories-screen').classList.add('active');
+
+            // Memunculkan Foto Satu per Satu
+            const photos = ['foto1.jpg', 'foto2.jpg', 'foto3.jpg', 'foto4.jpg', 'foto5.jpg'];
+            const container = document.getElementById('photo-container');
+            
+            photos.forEach((src, index) => {
+                setTimeout(() => {
+                    const img = document.createElement('img');
+                    img.src = src;
+                    img.className = 'photo';
+                    
+                    // Posisi acak agar terlihat seperti kolase/tumpukan estetik
+                    const topPos = Math.random() * 50 + 10; // 10% - 60%
+                    const leftPos = Math.random() * 50 + 10; // 10% - 60%
+                    img.style.top = topPos + '%';
+                    img.style.left = leftPos + '%';
+                    img.style.zIndex = index + 10;
+                    
+                    // Rotasi acak sedikit miring
+                    const rotation = Math.random() * 20 - 10; // -10deg sampai 10deg
+                    img.style.transform = `rotate(${rotation}deg)`;
+                    
+                    // Terapkan animasi fade in
+                    img.style.animation = `fadeInPhoto 1.5s forwards`;
+                    
+                    container.appendChild(img);
+                }, index * 1800); // Jeda 1.8 detik antar foto
+            });
+        }
+    </script>
+</body>
+</html>
