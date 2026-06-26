@@ -2,17 +2,15 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>For You</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
-
         body {
             margin: 0;
             padding: 0;
-            background-color: #050505;
+            background-color: #050505; /* Warna dasar hitam pekat */
             color: #ffffff;
-            font-family: 'Montserrat', sans-serif;
+            font-family: Arial, sans-serif;
             overflow: hidden;
             display: flex;
             justify-content: center;
@@ -32,7 +30,7 @@
             align-items: center;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.8s ease-in-out;
+            transition: opacity 1s ease-in-out;
             z-index: 10;
         }
 
@@ -43,124 +41,106 @@
 
         /* --- LAYAR 1: LOADING MEMORIES --- */
         .heart-glow {
-            width: 60px;
-            height: 60px;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23ff4d88"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>') no-repeat center;
-            filter: drop-shadow(0 0 15px rgba(255, 77, 136, 0.6));
-            animation: heartbeat 1.5s infinite;
-            margin-bottom: 25px;
+            width: 50px;
+            height: 50px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23ff3366"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>') no-repeat center;
+            filter: drop-shadow(0 0 15px rgba(255, 51, 102, 0.7));
+            margin-bottom: 20px;
+            animation: pulse 1.5s infinite;
         }
         .loading-text {
-            letter-spacing: 6px;
-            font-size: 11px;
-            color: #999;
-            margin-bottom: 15px;
+            letter-spacing: 5px;
+            font-size: 10px;
+            color: #888;
+            margin-bottom: 12px;
             text-transform: uppercase;
         }
         .loading-dots {
             display: flex;
-            gap: 8px;
-            justify-content: center;
-            align-items: center;
+            gap: 6px;
         }
         .loading-dots span {
-            width: 6px;
-            height: 6px;
-            background-color: #ff4d88;
+            width: 5px;
+            height: 5px;
+            background-color: #ff3366;
             border-radius: 50%;
             opacity: 0.3;
-            animation: dotFade 1.4s infinite;
+            animation: blink 1.4s infinite both;
         }
+        .loading-dots span:nth-child(1) { animation-delay: 0s; }
         .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
         .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
 
         /* --- LAYAR 2: TAP TO START --- */
         .tap-icon {
-            width: 40px;
-            height: 40px;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23ff4d88"><path d="M9 11.24V7.5C9 6.12 10.12 5 11.5 5S14 6.12 14 7.5v3.74c1.21-.81 2-2.18 2-3.74C16 5.01 13.99 3 11.5 3S7 5.01 7 7.5c0 1.56.79 2.93 2 3.74zm9.84 4.63l-4.54-2.26c-.17-.07-.35-.11-.54-.11H13v-6c0-.83-.67-1.5-1.5-1.5S10 6.67 10 7.5v10.74l-3.43-.72c-.08-.01-.15-.03-.24-.03-.31 0-.59.13-.79.33l-.79.8 4.94 4.94c.27.27.65.44 1.04.44h6.79c.75 0 1.33-.55 1.44-1.28l.75-5.27c.01-.07.02-.14.02-.21 0-.69-.47-1.28-1.14-1.42z"/></svg>') no-repeat center;
-            filter: drop-shadow(0 0 10px rgba(255, 77, 136, 0.4));
+            width: 45px;
+            height: 45px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23ff3366"><path d="M9 11.24V7.5C9 6.12 10.12 5 11.5 5S14 6.12 14 7.5v3.74c1.21-.81 2-2.18 2-3.74C16 5.01 13.99 3 11.5 3S7 5.01 7 7.5c0 1.56.79 2.93 2 3.74zm9.84 4.63l-4.54-2.26c-.17-.07-.35-.11-.54-.11H13v-6c0-.83-.67-1.5-1.5-1.5S10 6.67 10 7.5v10.74l-3.43-.72c-.08-.01-.15-.03-.24-.03-.31 0-.59.13-.79.33l-.79.8 4.94 4.94c.27.27.65.44 1.04.44h6.79c.75 0 1.33-.55 1.44-1.28l.75-5.27c.01-.07.02-.14.02-.21 0-.69-.47-1.28-1.14-1.42z"/></svg>') no-repeat center;
+            filter: drop-shadow(0 0 10px rgba(255, 51, 102, 0.5));
             animation: bounce 1.5s infinite;
             cursor: pointer;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
-        /* --- LAYAR 3: MEMORIES --- */
+        /* --- LAYAR 3: MEMORIES (TEXT & PHOTOS) --- */
         #memories-screen {
-            background-color: #050505;
+            background-color: #030102; /* Sedikit sentuhan ungu sangat gelap */
             z-index: 5;
         }
 
-        /* Dinding Teks (Wall of Text) Persis Seperti Video */
-        .bg-text-wall {
+        /* Teks background yang tersebar dan statis */
+        #bg-text-container {
             position: absolute;
-            top: -10%; left: -50%; width: 200%; height: 120%;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-around;
+            width: 100%;
+            height: 100%;
             z-index: 1;
-            opacity: 0.35; /* Tingkat kesamaran teks */
-            pointer-events: none;
+            overflow: hidden;
         }
-        .text-row {
-            color: #3b1c2b; /* Warna ungu/pink sangat gelap */
-            font-size: 18px;
-            font-weight: 600;
+        .bg-word {
+            position: absolute;
+            color: rgba(255, 180, 200, 0.15); /* Warna samar pink/ungu */
+            font-size: 14px;
             white-space: nowrap;
-            letter-spacing: 2px;
-            animation: scrollText 30s linear infinite;
-        }
-        .text-row:nth-child(even) {
-            animation: scrollTextReverse 35s linear infinite;
+            opacity: 0;
+            transition: opacity 2s ease-in;
         }
 
-        /* Container Foto Menumpuk di Tengah */
+        /* Foto menyebar di layar (Kolase) */
         #photo-container {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 160px; /* Ukuran dasar foto di HP */
-            height: 220px;
+            width: 100%;
+            height: 100%;
+            max-width: 500px;
             z-index: 2;
         }
         .photo {
             position: absolute;
-            top: 0; left: 0;
-            width: 100%;
-            height: 100%;
+            width: 130px; /* Ukuran pas untuk layar HP */
+            height: 170px;
             object-fit: cover;
-            border-radius: 12px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.9);
+            border-radius: 8px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.8);
             opacity: 0;
-            transform: scale(0.8);
-            /* Transisi pop-up cepat khas template capcut */
-            transition: opacity 0.3s ease-out, transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: scale(0.95);
+            transition: opacity 1s ease-out, transform 1.5s ease-out; /* Fade in mulus seperti video */
         }
         .photo.show {
             opacity: 1;
+            transform: scale(1) !important; /* Efek membesar sangat halus saat muncul */
         }
 
         /* --- KEYFRAMES --- */
-        @keyframes heartbeat {
-            0%, 100% { transform: scale(0.95); }
-            50% { transform: scale(1.05); filter: drop-shadow(0 0 25px rgba(255, 77, 136, 0.8)); }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 15px rgba(255, 51, 102, 0.7)); }
+            50% { transform: scale(1.05); filter: drop-shadow(0 0 25px rgba(255, 51, 102, 1)); }
         }
-        @keyframes dotFade {
-            0%, 100% { opacity: 0.2; }
-            50% { opacity: 1; box-shadow: 0 0 8px #ff4d88; }
+        @keyframes blink {
+            0%, 80%, 100% { opacity: 0.2; }
+            40% { opacity: 1; box-shadow: 0 0 8px #ff3366; }
         }
         @keyframes bounce {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        @keyframes scrollText {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-20%); }
-        }
-        @keyframes scrollTextReverse {
-            0% { transform: translateX(-20%); }
-            100% { transform: translateX(0); }
+            50% { transform: translateY(-8px); }
         }
     </style>
 </head>
@@ -170,7 +150,6 @@
         <source src="musik.mp3" type="audio/mp3">
     </audio>
 
-    <!-- Layar 1 -->
     <div id="loading-screen" class="screen active">
         <div class="heart-glow"></div>
         <div class="loading-text">L O A D I N G &nbsp; M E M O R I E S</div>
@@ -179,81 +158,108 @@
         </div>
     </div>
 
-    <!-- Layar 2 -->
     <div id="start-screen" class="screen" onclick="startMemories()">
         <div class="tap-icon"></div>
         <div class="loading-text" style="color: #666;">T A P &nbsp; T O &nbsp; S T A R T</div>
     </div>
 
-    <!-- Layar 3 -->
     <div id="memories-screen" class="screen">
-        <!-- Dinding Teks Background -->
-        <div class="bg-text-wall" id="text-wall"></div>
-        <!-- Wadah Tumpukan Foto di Tengah -->
+        <div id="bg-text-container"></div>
         <div id="photo-container"></div>
     </div>
 
     <script>
-        // 1. Pindah otomatis dari Loading ke Tap to Start (durasi 3 detik)
+        // Transisi Loading ke Tap
         setTimeout(() => {
             document.getElementById('loading-screen').classList.remove('active');
             document.getElementById('start-screen').classList.add('active');
-        }, 3000);
+        }, 3500);
 
-        // 2. Klik Tap To Start
         function startMemories() {
-            const music = document.getElementById('bg-music');
-            music.play().catch(e => console.log(e));
+            // Putar Musik
+            document.getElementById('bg-music').play().catch(e => console.log(e));
 
+            // Ubah Layar
             document.getElementById('start-screen').classList.remove('active');
             document.getElementById('memories-screen').classList.add('active');
 
-            buildTextWall();
-            showPhotos();
+            scatterBackgroundText();
+            scatterPhotos();
         }
 
-        // 3. Membangun background text seperti di video
-        function buildTextWall() {
-            const wall = document.getElementById('text-wall');
-            const pattern = "stay with me • my favorite person • forever • always with you • only you • thinking of u • you mean everything • I miss you • always on my mind • you are enough • my heart is yours • love u more • ";
-            
-            // Membuat 15 baris teks agar layar hitam penuh
-            for(let i = 0; i < 15; i++) {
-                const row = document.createElement('div');
-                row.className = 'text-row';
-                // Mengulang pattern agar cukup panjang untuk digeser (scrolling)
-                row.innerText = pattern.repeat(6); 
-                wall.appendChild(row);
+        // Menyebarkan Teks Acak seperti Word Cloud di Background
+        function scatterBackgroundText() {
+            const container = document.getElementById('bg-text-container');
+            const phrases = [
+                "stay with me", "my favorite person", "forever", 
+                "always with you", "only you", "thinking of u", 
+                "you mean everything", "I miss you", "always on my mind", 
+                "you are enough", "my heart is yours", "love u more"
+            ];
+
+            // Buat 30 teks tersebar di layar
+            for (let i = 0; i < 30; i++) {
+                const textEl = document.createElement('div');
+                textEl.className = 'bg-word';
+                textEl.innerText = phrases[Math.floor(Math.random() * phrases.length)];
+                
+                // Posisi Acak
+                textEl.style.top = Math.random() * 95 + '%';
+                textEl.style.left = (Math.random() * 100 - 10) + '%'; 
+                
+                // Ukuran font bervariasi agar terlihat estetik
+                textEl.style.fontSize = (Math.random() * 12 + 10) + 'px';
+                
+                container.appendChild(textEl);
+                
+                // Efek fade in
+                setTimeout(() => { 
+                    textEl.style.opacity = Math.random() * 0.5 + 0.2; 
+                }, 300);
             }
         }
 
-        // 4. Memunculkan foto menumpuk di tengah dengan pop-up halus
-        function showPhotos() {
+        // Menyebarkan Foto ke Berbagai Sudut secara Berurutan
+        function scatterPhotos() {
             const container = document.getElementById('photo-container');
-            const totalPhotos = 7; // Pastikan ada 7 foto (foto1.jpg s/d foto7.jpg) di GitHub
             
-            for(let i = 1; i <= totalPhotos; i++) {
+            // Pengaturan posisi foto agar menyebar (Kiri atas, Kanan bawah, Tengah, dll)
+            // Format: { src, atas, kiri, rotasi }
+            const layout = [
+                { src: 'foto1.jpg', top: '8%', left: '5%', rot: '-4deg' },    // Kiri atas
+                { src: 'foto2.jpg', top: '55%', left: '45%', rot: '5deg' },    // Kanan bawah
+                { src: 'foto3.jpg', top: '30%', left: '25%', rot: '-2deg' },   // Tengah
+                { src: 'foto4.jpg', top: '10%', left: '50%', rot: '4deg' },    // Kanan atas
+                { src: 'foto5.jpg', top: '65%', left: '5%', rot: '-5deg' },    // Kiri bawah
+                { src: 'foto6.jpg', top: '40%', left: '10%', rot: '3deg' },    // Kiri tengah
+                { src: 'foto7.jpg', top: '20%', left: '40%', rot: '-3deg' }    // Kanan atas (menutup)
+            ];
+
+            layout.forEach((pos, index) => {
                 setTimeout(() => {
                     const img = document.createElement('img');
-                    img.src = `foto${i}.jpg`;
+                    img.src = pos.src;
                     img.className = 'photo';
-                    img.style.zIndex = i + 10;
                     
-                    // Rotasi acak (-12 derajat hingga +12 derajat) dan posisi geser sedikit
-                    const randomRotation = (Math.random() * 24) - 12;
-                    const offsetX = (Math.random() * 20) - 10;
-                    const offsetY = (Math.random() * 20) - 10;
+                    // Terapkan posisi dan rotasi awal
+                    img.style.top = pos.top;
+                    img.style.left = pos.left;
+                    
+                    // Kita set rotasi default-nya di sini
+                    img.style.transform = `scale(0.95) rotate(${pos.rot})`;
+                    img.style.zIndex = index + 10;
                     
                     container.appendChild(img);
                     
-                    // Trigger animasi pop-up (scale 0.8 ke 1) 
+                    // Trigger animasi Fade In (tambahkan class 'show')
                     setTimeout(() => {
+                        // Override transform untuk mempertahankan rotasi saat scaling up
+                        img.style.transform = `scale(1) rotate(${pos.rot})`; 
                         img.classList.add('show');
-                        img.style.transform = `scale(1) translate(${offsetX}px, ${offsetY}px) rotate(${randomRotation}deg)`;
                     }, 50);
 
-                }, (i - 1) * 1400); // Jarak antar foto: 1.4 detik (sesuaikan jika perlu)
-            }
+                }, index * 1200); // Fotonya muncul tiap 1.2 detik
+            });
         }
     </script>
 </body>
