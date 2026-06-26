@@ -3,24 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loading Memories...</title>
+    <title>For You</title>
     <style>
-        /* Pengaturan Dasar */
+        /* Menggunakan font yang bersih dan minimalis seperti di video */
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap');
+
         body {
             margin: 0;
             padding: 0;
-            background-color: #050505; /* Warna latar gelap seperti di video */
+            background-color: #000000;
             color: #ffffff;
-            font-family: 'Georgia', serif; /* Font klasik/elegan */
+            font-family: 'Montserrat', sans-serif;
             overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             user-select: none;
+            -webkit-user-select: none;
         }
 
-        /* Pengaturan Layar Transisi */
+        /* Pengaturan Transisi Layar */
         .screen {
             position: absolute;
             width: 100%;
@@ -29,186 +32,265 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            transition: opacity 1s ease-in-out;
             opacity: 0;
             pointer-events: none;
+            transition: opacity 1.5s ease-in-out;
             z-index: 10;
         }
+
         .active {
             opacity: 1 !important;
             pointer-events: auto !important;
         }
 
-        /* --- Layar 1: Loading --- */
+        /* --- LAYAR 1: LOADING MEMORIES --- */
         .heart-glow {
-            font-size: 60px;
-            color: #ff4d6d;
-            animation: pulse 1.5s infinite;
-            text-shadow: 0 0 30px #ff4d6d;
-            margin-bottom: 20px;
+            font-size: 50px;
+            color: #ff6699;
+            text-shadow: 0 0 20px #ff6699, 0 0 40px #ff6699;
+            animation: heartbeat 1.2s infinite;
+            margin-bottom: 25px;
         }
         .loading-text {
-            letter-spacing: 6px;
-            font-size: 14px;
-            color: #b3b3b3;
+            letter-spacing: 8px;
+            font-size: 11px;
+            color: #e0e0e0;
+            margin-bottom: 15px;
             text-transform: uppercase;
         }
+        .loading-bar-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .line {
+            width: 40px;
+            height: 1px;
+            background-color: #ff6699;
+            box-shadow: 0 0 5px #ff6699;
+        }
+        .dots {
+            display: flex;
+            gap: 5px;
+        }
+        .dot {
+            width: 5px;
+            height: 5px;
+            background-color: #ff6699;
+            border-radius: 50%;
+            box-shadow: 0 0 5px #ff6699;
+            animation: fadeDot 1.5s infinite;
+        }
+        .dot:nth-child(2) { animation-delay: 0.5s; }
+        .dot:nth-child(3) { animation-delay: 1s; }
 
-        /* --- Layar 2: Tap to Start --- */
+        /* --- LAYAR 2: TAP TO START --- */
         .tap-icon {
-            font-size: 50px;
+            width: 55px;
+            height: 55px;
+            margin-bottom: 15px;
+            fill: #ff6699; /* Warna pink persis video */
+            filter: drop-shadow(0 0 10px rgba(255, 102, 153, 0.5));
+            animation: bounceTap 1.5s infinite;
             cursor: pointer;
-            animation: bounce 2s infinite;
-            color: #ff4d6d;
         }
         .tap-text {
-            margin-top: 15px;
-            letter-spacing: 4px;
-            font-size: 14px;
+            letter-spacing: 6px;
+            font-size: 12px;
             color: #888;
         }
 
-        /* --- Layar 3: Memories (Foto & Teks) --- */
+        /* --- LAYAR 3: MEMORIES & FOTO --- */
         #memories-screen {
-            background-color: #000;
             z-index: 5;
+            background-color: #000000;
         }
         
-        /* Teks melayang di background */
+        /* Wadah Teks Background (stay with me, dsb) */
+        #bg-texts-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
         .bg-text {
             position: absolute;
-            color: rgba(255, 255, 255, 0.15); /* Teks samar */
-            font-size: 16px;
+            color: rgba(255, 255, 255, 0.25);
+            font-size: 13px;
             white-space: nowrap;
-            z-index: 1;
-            animation: float 8s infinite alternate ease-in-out;
+            opacity: 0;
+            transition: opacity 2s ease-in-out;
         }
 
-        /* Container untuk foto-foto yang muncul */
+        /* Wadah Foto Menumpuk */
         #photo-container {
             position: relative;
             width: 100%;
             height: 100%;
-            max-width: 500px;
+            max-width: 450px; /* Lebar maksimal area foto */
             z-index: 2;
         }
         .photo {
             position: absolute;
-            width: 180px;
-            height: 240px;
+            width: 150px;
+            height: 200px;
             object-fit: cover;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            border-radius: 12px; /* Sudut membulat seperti di video */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.9);
             opacity: 0;
-            transition: transform 0.5s ease;
+            transform: scale(0.8);
         }
-        
-        /* Animasi */
-        @keyframes pulse {
-            0% { transform: scale(0.95); opacity: 0.8; }
-            50% { transform: scale(1.05); opacity: 1; text-shadow: 0 0 40px #ff4d6d; }
-            100% { transform: scale(0.95); opacity: 0.8; }
+
+        /* --- KEYFRAMES ANIMASI --- */
+        @keyframes heartbeat {
+            0% { transform: scale(0.9); }
+            14% { transform: scale(1.1); }
+            28% { transform: scale(0.9); }
+            42% { transform: scale(1.1); }
+            70% { transform: scale(0.9); }
         }
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-            40% { transform: translateY(-20px); }
-            60% { transform: translateY(-10px); }
+        @keyframes fadeDot {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
         }
-        @keyframes float {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(15px, -15px); }
+        @keyframes bounceTap {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
         }
-        @keyframes fadeInPhoto {
-            0% { opacity: 0; transform: translateY(30px) scale(0.9); }
-            100% { opacity: 1; transform: translateY(0) scale(1); }
+        @keyframes revealPhoto {
+            0% { opacity: 0; transform: scale(0.8) translateY(20px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
         }
     </style>
 </head>
 <body>
 
-    <!-- Musik Latar -->
-    <audio id="bg-music" loop>
+    <!-- File Musik -->
+    <audio id="bg-music">
         <source src="musik.mp3" type="audio/mp3">
     </audio>
 
     <!-- Layar 1: Loading Memories -->
     <div id="loading-screen" class="screen active">
-        <div class="heart-glow">❤️</div>
-        <div class="loading-text">LOADING MEMORIES<span id="dots"></span></div>
+        <div class="heart-glow">💖</div>
+        <div class="loading-text">L O A D I N G &nbsp; M E M O R I E S</div>
+        <div class="loading-bar-container">
+            <div class="line"></div>
+            <div class="dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+            <div class="line"></div>
+        </div>
     </div>
 
     <!-- Layar 2: Tap to Start -->
-    <div id="start-screen" class="screen">
-        <div class="tap-icon" onclick="startMemories()">👆</div>
-        <div class="tap-text">TAP TO START</div>
+    <div id="start-screen" class="screen" onclick="startMemories()">
+        <!-- Ikon Jari Minimalis Pink (Format SVG agar halus) -->
+        <svg class="tap-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9 11.24V7.5C9 6.12 10.12 5 11.5 5S14 6.12 14 7.5v3.74c1.21-.81 2-2.18 2-3.74C16 5.01 13.99 3 11.5 3S7 5.01 7 7.5c0 1.56.79 2.93 2 3.74zm9.84 4.63l-4.54-2.26c-.17-.07-.35-.11-.54-.11H13v-6c0-.83-.67-1.5-1.5-1.5S10 6.67 10 7.5v10.74l-3.43-.72c-.08-.01-.15-.03-.24-.03-.31 0-.59.13-.79.33l-.79.8 4.94 4.94c.27.27.65.44 1.04.44h6.79c.75 0 1.33-.55 1.44-1.28l.75-5.27c.01-.07.02-.14.02-.21 0-.69-.47-1.28-1.14-1.42z"/>
+        </svg>
+        <div class="tap-text">T A P &nbsp; T O &nbsp; S T A R T</div>
     </div>
 
-    <!-- Layar 3: Memories Collage -->
+    <!-- Layar 3: Memories -->
     <div id="memories-screen" class="screen">
-        <!-- Teks Romantis di Background -->
-        <div class="bg-text" style="top: 15%; left: 10%;">my favorite person</div>
-        <div class="bg-text" style="top: 25%; right: 15%; animation-delay: 1s;">stay with me forever</div>
-        <div class="bg-text" style="top: 45%; left: 5%; animation-delay: 2s;">the most hardworking person</div>
-        <div class="bg-text" style="top: 65%; right: 5%; animation-delay: 0.5s;">thank you for always supporting me</div>
-        <div class="bg-text" style="top: 85%; left: 20%; animation-delay: 1.5s;">always on my mind</div>
-        <div class="bg-text" style="top: 35%; left: 35%; animation-delay: 3s;">you mean everything</div>
-        <div class="bg-text" style="top: 75%; left: 40%; animation-delay: 2.5s;">I love you</div>
-
-        <!-- Area Foto -->
+        <div id="bg-texts-container"></div>
         <div id="photo-container"></div>
     </div>
 
     <script>
-        // Efek Titik-titik Loading
-        let dotCount = 0;
-        const dotsElement = document.getElementById('dots');
-        const loadingInterval = setInterval(() => {
-            dotCount = (dotCount + 1) % 4;
-            dotsElement.innerText = '.'.repeat(dotCount);
-        }, 500);
+        // Teks background yang persis ada di dalam video
+        const words = [
+            "stay with me", "my favorite person", "forever", 
+            "always with you", "only you", "thinking of u", 
+            "you mean everything", "I miss you", "always on my mind", 
+            "you are enough", "my heart is yours", "love u more"
+        ];
 
-        // Pindah dari Loading ke Tap to Start setelah 4 detik
+        // 1. Pindah otomatis dari layar Loading ke Tap To Start
         setTimeout(() => {
-            clearInterval(loadingInterval);
             document.getElementById('loading-screen').classList.remove('active');
             document.getElementById('start-screen').classList.add('active');
-        }, 4000);
+        }, 4000); // Durasi loading 4 detik
 
-        // Fungsi saat layar ditekan
+        // 2. Fungsi saat ikon Tap to Start diklik
         function startMemories() {
             // Mainkan musik
-            document.getElementById('bg-music').play();
-            
-            // Transisi Layar
+            const music = document.getElementById('bg-music');
+            music.play().catch(e => console.log("Musik tertunda: ", e));
+
+            // Transisi dari layar Tap ke layar Foto
             document.getElementById('start-screen').classList.remove('active');
             document.getElementById('memories-screen').classList.add('active');
 
-            // Memunculkan Foto Satu per Satu
-            const photos = ['foto1.jpg', 'foto2.jpg', 'foto3.jpg', 'foto4.jpg', 'foto5.jpg'];
+            // Jalankan animasi teks background dan foto
+            generateBackgroundTexts();
+            showPhotosSequentially();
+        }
+
+        // 3. Fungsi memunculkan teks redup di seluruh background
+        function generateBackgroundTexts() {
+            const container = document.getElementById('bg-texts-container');
+            
+            // Membuat 40 teks agar background terlihat penuh seperti video
+            for (let i = 0; i < 40; i++) {
+                setTimeout(() => {
+                    const textEl = document.createElement('div');
+                    textEl.className = 'bg-text';
+                    textEl.innerText = words[Math.floor(Math.random() * words.length)];
+                    
+                    // Sebar posisi secara acak
+                    textEl.style.top = Math.random() * 95 + '%';
+                    textEl.style.left = Math.random() * 90 + '%';
+                    
+                    // Buat ukuran font dan opacity acak agar berdimensi
+                    const size = Math.random() * 12 + 10; 
+                    textEl.style.fontSize = size + 'px';
+                    textEl.style.opacity = Math.random() * 0.3 + 0.1; 
+                    
+                    container.appendChild(textEl);
+                    
+                    // Efek memudar masuk (fade in)
+                    setTimeout(() => { textEl.style.opacity = textEl.style.opacity; }, 100);
+                }, i * 200); // Muncul perlahan satu per satu setiap 0.2 detik
+            }
+        }
+
+        // 4. Fungsi memunculkan foto dengan tata letak menyebar & menumpuk
+        function showPhotosSequentially() {
             const container = document.getElementById('photo-container');
             
-            photos.forEach((src, index) => {
+            // Konfigurasi posisi dan rotasi persis seperti efek kolase video
+            // Membutuhkan 7 foto di GitHub
+            const photoConfigs = [
+                { src: 'foto1.jpg', top: '15%', left: '10%', rot: '-5deg' },
+                { src: 'foto2.jpg', top: '55%', left: '45%', rot: '8deg' },
+                { src: 'foto3.jpg', top: '35%', left: '5%', rot: '-12deg' },
+                { src: 'foto4.jpg', top: '10%', left: '40%', rot: '5deg' },
+                { src: 'foto5.jpg', top: '65%', left: '15%', rot: '-8deg' },
+                { src: 'foto6.jpg', top: '40%', left: '30%', rot: '3deg' },
+                { src: 'foto7.jpg', top: '25%', left: '20%', rot: '-2deg' }
+            ];
+
+            photoConfigs.forEach((config, index) => {
                 setTimeout(() => {
                     const img = document.createElement('img');
-                    img.src = src;
+                    img.src = config.src;
                     img.className = 'photo';
                     
-                    // Posisi acak agar terlihat seperti kolase/tumpukan estetik
-                    const topPos = Math.random() * 50 + 10; // 10% - 60%
-                    const leftPos = Math.random() * 50 + 10; // 10% - 60%
-                    img.style.top = topPos + '%';
-                    img.style.left = leftPos + '%';
-                    img.style.zIndex = index + 10;
+                    img.style.top = config.top;
+                    img.style.left = config.left;
+                    img.style.transform = `rotate(${config.rot})`;
+                    img.style.zIndex = index + 10; // Agar foto baru selalu menumpuk di atas
                     
-                    // Rotasi acak sedikit miring
-                    const rotation = Math.random() * 20 - 10; // -10deg sampai 10deg
-                    img.style.transform = `rotate(${rotation}deg)`;
-                    
-                    // Terapkan animasi fade in
-                    img.style.animation = `fadeInPhoto 1.5s forwards`;
+                    // Jalankan animasi pop-up lembut
+                    img.style.animation = `revealPhoto 1s cubic-bezier(0.25, 1, 0.5, 1) forwards`;
                     
                     container.appendChild(img);
-                }, index * 1800); // Jeda 1.8 detik antar foto
+                }, index * 1800); // Foto muncul setiap 1.8 detik sekali
             });
         }
     </script>
